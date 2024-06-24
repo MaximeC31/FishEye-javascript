@@ -7,23 +7,10 @@ export const render = (photographersMedia) => {
 	let galleryHTML = '';
 
 	photographersMedia.forEach((media) => {
+		const mediaType = mediaFactory(media);
 		galleryHTML += `
 		<article class="main__single-photographer--portfolio__container__results-part__result">
-		${
-			media.image
-				? `<img
-			src="./assets/images-webp/${media.image}"
-			alt="${media.title}"
-			class="main__single-photographer--portfolio__container__results-part__result__media"
-			tabIndex=0
-		/>`
-				: `<video
-			src="./assets/images-webp/${media.video}"
-			class="main__single-photographer--portfolio__container__results-part__result__media"
-			tabIndex=0
-		></video
-		>`
-		}
+		${mediaType.template(media)}
 		<div class="main__single-photographer--portfolio__container__results-part__result__details">
 			<h2>${media.title}</h2>
 			<div
@@ -75,4 +62,35 @@ export const events = (button, photographersMedia, singlePhotographer) => {
 export default {
 	render,
 	events,
+};
+
+const imageTemplate = () => ({
+	template: (media) => `
+	  <img
+		src="./assets/images-webp/${media.image}"
+		alt="${media.title}"
+		class="main__single-photographer--portfolio__container__results-part__result__media"
+		tabIndex=0
+	  />
+	`,
+});
+
+const videoTemplate = () => ({
+	template: (media) => `
+	  <video
+		src="./assets/images-webp/${media.video}"
+		class="main__single-photographer--portfolio__container__results-part__result__media"
+		tabIndex=0
+	  ></video>
+	`,
+});
+
+const mediaFactory = (media) => {
+	if (media.image) {
+		return imageTemplate();
+	}
+
+	if (media.video) {
+		return videoTemplate();
+	}
 };
